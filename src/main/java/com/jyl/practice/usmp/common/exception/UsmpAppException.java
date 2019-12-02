@@ -1,4 +1,4 @@
-package com.jyl.practice.usmp.exception;
+package com.jyl.practice.usmp.common.exception;
 
 import lombok.Getter;
 import lombok.Setter;

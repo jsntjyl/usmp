@@ -2,19 +2,17 @@ package com.jyl.practice.usmp.controller;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.jyl.practice.usmp.aspect.annotation.CustomPageHelper;
+import com.jyl.practice.usmp.aspect.annotation.ResponseBaseResult;
 import com.jyl.practice.usmp.dao.SampleAnnotatedMapper;
-import com.jyl.practice.usmp.po.User;
-import com.jyl.practice.usmp.service.UserService;
+import com.jyl.practice.usmp.po.SysUser;
+import com.jyl.practice.usmp.service.SysUserService;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -23,6 +21,7 @@ import java.util.List;
  * @author: 19042501
  * @create: 2019-11-07 20:13
  */
+@Log4j2
 @RestController
 public class MyTestController {
 
@@ -30,7 +29,7 @@ public class MyTestController {
     private SampleAnnotatedMapper sampleAnnotatedMapper;
 
     @Autowired
-    private UserService userService;
+    private SysUserService userService;
 
     @GetMapping("test/{name}")
     public String test(@PathVariable String name)
@@ -39,12 +38,13 @@ public class MyTestController {
     }
 
     @GetMapping("testDB")
-    public Object testDB()
+    public LocalDateTime testDB()
     {
-        return sampleAnnotatedMapper.test().format(DateTimeFormatter.ISO_LOCAL_DATE);
+        return sampleAnnotatedMapper.test();
     }
 
     @GetMapping("testDB2")
+    @ResponseBaseResult
     public String testDB2()
     {
         return sampleAnnotatedMapper.queryDemo().toString();
@@ -53,37 +53,85 @@ public class MyTestController {
     @GetMapping("testDB3/{name}")
     public String testDB3(@PathVariable String name)
     {
-        User user = new User();
+        SysUser user = new SysUser();
         user.setUserName(name);
+        log.info("===123321===");
         return sampleAnnotatedMapper.queryDemo2(user).toString();
     }
 
     @GetMapping("testDB4")
+    @ResponseBaseResult
     public Object testDB4(@RequestParam String name, @RequestParam String pwd)
     {
-        User user = new User();
+        SysUser user = new SysUser();
         user.setUserName(name);
         user.setPassWord(pwd);
         PageHelper.startPage(1,2);
-        List<User> userList =  sampleAnnotatedMapper.queryDemo2(user);
+        List<SysUser> userList =  sampleAnnotatedMapper.queryDemo2(user);
         return new PageInfo<>(userList);
     }
 
     @GetMapping("testPage1")
     public Object testPage1(@RequestParam String name, @RequestParam String pwd)
     {
-        User user = new User();
+        SysUser user = new SysUser();
         user.setUserName(name);
         user.setPassWord(pwd);
         return userService.queryUser(user);
     }
 
     @GetMapping("testPage2")
-    public Object testPage2(@RequestParam String name, @RequestParam String pwd)
+    public List<SysUser> testPage2(@RequestParam String name, @RequestParam String pwd)
     {
-        User user = new User();
+        SysUser user = new SysUser();
         user.setUserName(name);
         user.setPassWord(pwd);
         return userService.queryUser2(2,4, user);
     }
+
+    @GetMapping("queryTest")
+    public void inserTest1(@RequestParam String name, @RequestParam String pwd)
+    {
+        /*SysUser user = new SysUser();
+        user.setUserName(name);
+        user.setPassWord(pwd);
+        userService.insertNoTrans(user);*/
+
+        SysUser user = sampleAnnotatedMapper.queryUserByName(name, pwd);
+        System.out.println(user);
+    }
+
+    @GetMapping("inserTest2")
+    public void inserTest2(@RequestParam String name, @RequestParam String pwd)
+    {
+        SysUser user = new SysUser();
+        user.setUserName(name);
+        user.setPassWord(pwd);
+        userService.insertTest(user);
+    }
+
+    @GetMapping("inserTest3")
+    public void inserTest3(@RequestParam String name, @RequestParam String pwd)
+    {
+        SysUser user = new SysUser();
+        user.setUserName(name);
+        user.setPassWord(pwd);
+        sampleAnnotatedMapper.addUser(user);
+    }
+
+    @RequestMapping("testDate")
+    public void testDate(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime dateTime)
+    {
+        System.out.println(dateTime.format(DateTimeFormatter.ISO_DATE_TIME));
+    }
+
+    @RequestMapping("testBean22")
+    public void testBean22(@RequestBody SysUser user)
+    {
+        System.out.println(user);
+    }
+
+
+
+
 }

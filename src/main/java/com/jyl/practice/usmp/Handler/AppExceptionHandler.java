@@ -1,14 +1,18 @@
 package com.jyl.practice.usmp.Handler;
 
-import com.jyl.practice.usmp.exception.UsmpAppException;
+import com.jyl.practice.usmp.aspect.annotation.ResponseBaseResult;
+import com.jyl.practice.usmp.common.enums.ResultCodeEnum;
+import com.jyl.practice.usmp.common.exception.UsmpAppException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.annotation.Order;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
@@ -26,15 +30,38 @@ public class AppExceptionHandler {
     private static Logger logger = LoggerFactory.getLogger(AppExceptionHandler.class);
 
     @ExceptionHandler(UsmpAppException.class)
-    public ErrorMessage handAppException(UsmpAppException e, WebRequest request)
+    @ResponseBody
+    public Object handAppException(UsmpAppException e, WebRequest request)
     {
         ErrorMessage errorMessage = new ErrorMessage();
-        errorMessage.setCode("");
-        errorMessage.setMessage("");
+        errorMessage.setCode(e.getCode());
+        errorMessage.setMessage(e.getMessage());
         errorMessage.setExcetionMsg(e.getMessage());
         errorMessage.setPath(getPath(request));
         errorMessage.setTimestamp(ZonedDateTime.now());
-        return new ErrorMessage();
+
+        logger.error("application catch exception, message : {}", errorMessage, e);
+        return errorMessage;
+    }
+
+    /**
+     *
+     * @param e
+     * @param request
+     * @return 默认返回是统一错误页面，加上responsebody代表返回消息内容
+     */
+    @ExceptionHandler(RuntimeException.class)
+    @ResponseBody
+    public Object handRuntimeException(RuntimeException e, WebRequest request)
+    {
+        ErrorMessage errorMessage = new ErrorMessage();
+        errorMessage.setCode(getCode(request));
+        errorMessage.setMessage("application is error");
+        errorMessage.setExcetionMsg(e.getMessage());
+        errorMessage.setPath(getPath(request));
+        errorMessage.setTimestamp(ZonedDateTime.now());
+        logger.error("application catch exception, message : {}", errorMessage, e);
+        return errorMessage;
     }
 
     private Object getAttribute(RequestAttributes requestAttributes, String name) {
@@ -49,6 +76,12 @@ public class AppExceptionHandler {
         }
 
         return path;
+    }
+
+    private String getCode(final WebRequest request) {
+        String code = (String)this.getAttribute(request, "javax.servlet.error.status_code");
+
+        return code == null ? ResultCodeEnum.SYSTEM_ERROR.getCode() : code;
     }
 
     @Getter

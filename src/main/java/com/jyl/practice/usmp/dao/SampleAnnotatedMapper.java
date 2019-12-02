@@ -1,6 +1,6 @@
 package com.jyl.practice.usmp.dao;
 
-import com.jyl.practice.usmp.po.User;
+import com.jyl.practice.usmp.po.SysUser;
 import org.apache.ibatis.annotations.*;
 
 import java.time.LocalDateTime;
@@ -19,10 +19,17 @@ public interface SampleAnnotatedMapper {
             @Result(column = "passWord", property = "passWord"),
             @Result(column = "realName", property = "realName")
     })
-    User queryDemo();
+    SysUser queryDemo();
 
     @SelectProvider(type = TestDemoSqlProvider.class, method = "queryDemo")
     @ResultMap("userMap")
-    List<User> queryDemo2(User user);
+    List<SysUser> queryDemo2(SysUser user);
+
+    @InsertProvider(type = TestDemoSqlProvider.class, method = "insertDemo")
+    int addUser(SysUser user);
+
+    @SelectProvider(type = TestDemoSqlProvider.class, method = "queryUserByName")
+    //@ResultMap("userMap")
+    SysUser queryUserByName(String userName, String passWord);
 
 }

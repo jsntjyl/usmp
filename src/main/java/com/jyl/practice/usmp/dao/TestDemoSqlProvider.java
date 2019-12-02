@@ -1,6 +1,6 @@
 package com.jyl.practice.usmp.dao;
 
-import com.jyl.practice.usmp.po.User;
+import com.jyl.practice.usmp.po.SysUser;
 import org.apache.ibatis.jdbc.SQL;
 import org.springframework.util.StringUtils;
 
@@ -12,7 +12,7 @@ import org.springframework.util.StringUtils;
  */
 public class TestDemoSqlProvider {
 
-    public String queryDemo(User user)
+    public String queryDemo(SysUser user)
     {
         SQL sql = new SQL().SELECT("*")
                 .FROM("user");
@@ -26,6 +26,18 @@ public class TestDemoSqlProvider {
         if (!StringUtils.isEmpty(user.getPassWord()))
             sql = sql.WHERE("password = #{passWord}");
 
+        return sql.toString();
+    }
+
+    public String insertDemo(SysUser user)
+    {
+        SQL sql = new SQL().INSERT_INTO("user").INTO_COLUMNS("userName", "passWord").INTO_VALUES("#{userName}", "#{passWord}");
+        return sql.toString();
+    }
+
+    public String queryUserByName(String userName, String passWord)
+    {
+        SQL sql = new SQL().SELECT("*").FROM("user").WHERE("userName = #{userName}").WHERE("passWord = #{passWord}").LIMIT(1);
         return sql.toString();
     }
 
