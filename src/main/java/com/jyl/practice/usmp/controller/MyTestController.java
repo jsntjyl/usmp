@@ -97,8 +97,7 @@ public class MyTestController {
         user.setPassWord(pwd);
         userService.insertNoTrans(user);*/
 
-        SysUser user = sampleAnnotatedMapper.queryUserByName(name, pwd);
-        System.out.println(user);
+        SysUser user = sampleAnnotatedMapper.queryUserByName(name);
     }
 
     @GetMapping("inserTest2")

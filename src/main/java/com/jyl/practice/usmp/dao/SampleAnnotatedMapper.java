@@ -29,7 +29,6 @@ public interface SampleAnnotatedMapper {
     int addUser(SysUser user);
 
     @SelectProvider(type = TestDemoSqlProvider.class, method = "queryUserByName")
-    //@ResultMap("userMap")
-    SysUser queryUserByName(String userName, String passWord);
+    SysUser queryUserByName(String userName);
 
 }

@@ -1,7 +1,10 @@
 package com.jyl.practice.usmp.controller;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  * @program: usmp
@@ -12,15 +15,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class SysLoginController {
 
-    @RequestMapping("/login")
-    public String loginPage()
-    {
-        return "login";
-    }
-
-    @RequestMapping("/index")
-    public String indexPage()
-    {
-        return "index";
+    /**
+     * 获取当前用户信息
+     * @param authentication
+     * @return
+     */
+    @GetMapping("/info")
+    @ResponseBody
+    public Object getCurrentUser(Authentication authentication) {
+        return authentication;
     }
 }

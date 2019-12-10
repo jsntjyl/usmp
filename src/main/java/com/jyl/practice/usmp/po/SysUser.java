@@ -27,5 +27,5 @@ public class SysUser {
      * 指定格式优先级高于appconfig中的配置
      */
     //@JsonFormat(timezone = "GMT+8", pattern = "yyyyMMddHHmmss")
-    private ZonedDateTime dateTime;
+    private LocalDateTime dateTime;
 }

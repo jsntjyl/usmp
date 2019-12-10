@@ -35,9 +35,9 @@ public class TestDemoSqlProvider {
         return sql.toString();
     }
 
-    public String queryUserByName(String userName, String passWord)
+    public String queryUserByName(String userName)
     {
-        SQL sql = new SQL().SELECT("*").FROM("user").WHERE("userName = #{userName}").WHERE("passWord = #{passWord}").LIMIT(1);
+        SQL sql = new SQL().SELECT("*").FROM("user").WHERE("userName = #{userName}").LIMIT(1);
         return sql.toString();
     }
 

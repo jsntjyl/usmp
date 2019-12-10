@@ -15,5 +15,5 @@ import java.lang.annotation.Target;
 @Target({ElementType.METHOD})
 public @interface CustomPageHelper {
     int page() default 1;
-    int pageSize() default 3;
+    int pageSize() default 10;
 }
