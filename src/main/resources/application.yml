@@ -17,6 +17,22 @@ spring:
       connection-test-query: SELECT 1
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
+  kafka:
+    bootstrap-servers: 10.200.114.160:9092
+    producer:
+      retries: 3
+      batch-size: 16384
+      buffer-memory: 33554432
+      acks: 1
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
+    consumer:
+      group-id: BUMS_COMMON
+      auto-offset-reset: earliest
+      enable-auto-commit: true
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
 
 mybatis:
   type-aliases-package: com.jyl.practice.usmp.po
